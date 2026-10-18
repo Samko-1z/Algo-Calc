@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.calculatorapp"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
@@ -51,4 +51,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+    implementation("androidx.compose.runtime:runtime-livedata:1.12.1")
+    implementation("org.mozilla:rhino:1.9.1")
 }
