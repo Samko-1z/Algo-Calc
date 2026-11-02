@@ -2,6 +2,7 @@ package com.example.calculatorapp
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,7 +13,13 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -40,21 +47,39 @@ val buttonList = listOf(
 fun Calculator(modifier: Modifier = Modifier, viewModel: CalculatorViewModel) {
 
     val equationText = viewModel.EquationText.observeAsState()
-    val resultText = viewModel.resultText.observeAsState()
+    val resultText   = viewModel.resultText.observeAsState()
+
     Box(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier            = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.End
         ) {
+
+            Row(
+                modifier          = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(onClick = { viewModel.toggleTheme() }) {
+                    Icon(
+                        imageVector = if (viewModel.isDarkTheme.value)
+                            Icons.Filled.LightMode else Icons.Filled.DarkMode,
+                        contentDescription = if (viewModel.isDarkTheme.value)
+                            "Switch to Light Mode" else "Switch to Dark Mode",
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+            }
             Text(
                 text = equationText.value ?: "",
                 style = TextStyle(
-                    fontSize = 30.sp,
-                    textAlign = TextAlign.End
+                    fontSize  = 30.sp,
+                    textAlign = TextAlign.End,
+                    color     = MaterialTheme.colorScheme.onSurface
                 ),
                 maxLines = 5,
                 overflow = TextOverflow.Ellipsis,
@@ -63,10 +88,11 @@ fun Calculator(modifier: Modifier = Modifier, viewModel: CalculatorViewModel) {
             Spacer(modifier = Modifier.weight(0.5f))
 
             Text(
-                text = resultText.value?:"",
+                text = resultText.value ?: "",
                 style = TextStyle(
-                    fontSize = 60.sp,
-                    textAlign = TextAlign.End
+                    fontSize  = 60.sp,
+                    textAlign = TextAlign.End,
+                    color     = MaterialTheme.colorScheme.onBackground
                 ),
                 maxLines = 2,
                 modifier = Modifier.fillMaxWidth()
@@ -75,7 +101,7 @@ fun Calculator(modifier: Modifier = Modifier, viewModel: CalculatorViewModel) {
             Spacer(modifier = Modifier.height(10.dp))
 
             LazyVerticalGrid(
-                columns = GridCells.Fixed(count = 4),
+                columns  = GridCells.Fixed(count = 4),
                 modifier = Modifier.weight(1f)
             ) {
                 items(buttonList) { item ->
@@ -91,39 +117,49 @@ fun Calculator(modifier: Modifier = Modifier, viewModel: CalculatorViewModel) {
 @Composable
 fun CalculatorButton(btn: String, onClick: () -> Unit) {
     Box(
-        modifier = Modifier.padding(6.dp),
+        modifier         = Modifier.padding(6.dp),
         contentAlignment = Alignment.Center
     ) {
         FloatingActionButton(
-            onClick = onClick,
-            modifier = Modifier.size(70.dp),
-            shape = CircleShape,
+            onClick        = onClick,
+            modifier       = Modifier.size(70.dp),
+            shape          = CircleShape,
             containerColor = getColor(btn),
-            contentColor = if (btn in listOf("/", "*", "+", "-", "=")) Color.White else Color.Black
+            contentColor   = if (btn in listOf("/", "*", "+", "-", "="))
+                Color.White else MaterialTheme.colorScheme.onTertiary
         ) {
             Text(
-                text = btn,
-                fontSize = 24.sp,
+                text       = btn,
+                fontSize   = 24.sp,
                 fontWeight = FontWeight.Bold
             )
         }
     }
 }
 
+@Composable
 fun getColor(btn: String): Color {
     if (btn == "C" || btn == "AC")
-        return Color(0xFFD4D4D8)
+        return MaterialTheme.colorScheme.secondary
     if (btn == "(" || btn == ")")
-        return Color(0xFFE4E4E7)
+        return MaterialTheme.colorScheme.secondary
     if (btn == "/" || btn == "*" || btn == "+" || btn == "-" || btn == "=")
-        return Color(0xFFFF9800)
-    return Color(0xFFF4F4F5)
+        return MaterialTheme.colorScheme.primary
+    return MaterialTheme.colorScheme.tertiary
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Light Mode")
 @Composable
 fun CalculatorPreview() {
-    CalculatorAppTheme {
+    CalculatorAppTheme(darkTheme = false) {
+        Calculator(viewModel = CalculatorViewModel())
+    }
+}
+
+@Preview(showBackground = true, name = "Dark Mode")
+@Composable
+fun CalculatorPreviewDark() {
+    CalculatorAppTheme(darkTheme = true) {
         Calculator(viewModel = CalculatorViewModel())
     }
 }

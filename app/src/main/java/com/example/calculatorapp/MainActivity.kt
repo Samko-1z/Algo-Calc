@@ -18,12 +18,11 @@ class MainActivity : ComponentActivity() {
         val calculatorViewModel = ViewModelProvider(this)[CalculatorViewModel::class.java]
         enableEdgeToEdge()
         setContent {
-            CalculatorAppTheme {
+            CalculatorAppTheme(darkTheme = calculatorViewModel.isDarkTheme.value) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                        Calculator(modifier = Modifier.padding(innerPadding), calculatorViewModel)
+                    Calculator(modifier = Modifier.padding(innerPadding), calculatorViewModel)
                 }
             }
         }
     }
 }
-

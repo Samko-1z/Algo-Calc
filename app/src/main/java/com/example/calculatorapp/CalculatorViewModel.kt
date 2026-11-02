@@ -1,6 +1,7 @@
 package com.example.calculatorapp
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -56,5 +57,11 @@ class CalculatorViewModel : ViewModel() {
         } finally {
             org.mozilla.javascript.Context.exit()
         }
+    }
+
+    val isDarkTheme = mutableStateOf(false)
+
+    fun toggleTheme() {
+        isDarkTheme.value = !isDarkTheme.value
     }
 }
